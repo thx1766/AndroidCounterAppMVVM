@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,10 +31,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val viewModel: CounterViewModel by viewModels()
             AndroidCounterAppMVVMTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     TheCounterApp(
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
+                        viewModel
                     )
                 }
             }
@@ -42,16 +45,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TheCounterApp(modifier: Modifier = Modifier){
-    val count = remember { mutableStateOf(0) }
+fun TheCounterApp(modifier: Modifier = Modifier, viewModel: CounterViewModel){
 
-    fun increment(){
-        count.value++
-    }
 
-    fun decrement(){
-        count.value--
-    }
+
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -59,16 +56,16 @@ fun TheCounterApp(modifier: Modifier = Modifier){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text(
-            text = "Count: ${count.value}",
+            text = "Count: ${viewModel.count.value}",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row{
-            Button(onClick = {increment()}){
+            Button(onClick = {viewModel.increment()}){
                 Text("Increment")
             }
-            Button(onClick = {decrement()}) {
+            Button(onClick = {viewModel.decrement()}) {
                 Text("Decrement")
             }
         }
